@@ -1,0 +1,281 @@
+<html>
+<head>
+  <title>Οπτικοποίηση Αλγορίθμων Αναζήτησης - Πτυχιακή Εργασία</title>
+  <meta charset="UTF-8">
+  <link href="../../dist/css/vis.css" rel="stylesheet" type="text/css" />
+  <link href="../../dist/css/mycss.css" rel="stylesheet" type="text/css" />
+  <link href="../../dist/css/materialize.css" rel="stylesheet" type="text/css" />
+  <link href="../../dist/css/introjs.css" rel="stylesheet" type="text/css" />
+ 
+</head>
+<header>
+
+      <ul id="nav-mobile" class="side-nav fixed">
+        <li class="logo"><img src="../../dist/img/logo.png" height="100" width="auto"></li>
+		<li>
+			<div data-step="4" data-intro="From this dropdown you can select an algorithm to view its info and see how it works." class="input-field col s12 tooltipped" data-position="right" data-tooltip="Select an algorithm to view and run.">
+				<select id="algorithm-select">
+					  <option value="" disabled selected>Διάλεξε Αλγόριθμο</option>
+					  <option value="bfs">Αναζήτηση πρώτα σε πλάτος (BFS)</option>
+					  <option value="dfs">Αναζήτηση πρώτα σε βάθος (DFS)</option>
+				</select>
+				<label>Επιλογή Αλγορίθμου</label>
+			</div>
+				  
+		</li>		  
+		
+		<li><h2>Αναζητηση πρώτα σε Πλάτος(BFS)</h2></li>
+		<li><p data-step="5" data-intro="This is the overview of the search algorithm explaining in few words how it works." data-position="right" class="algo-overview">Ο αλγόριθμος Αναζήτησης Κατά Πλάτος  (BFS - Breadth First Search) είναι ένας αλγόριθμος αναζήτησης ο οποίος ξεκινάει από τη ρίζα του δέντρου και διερευνά πρώτα τους κηόμβους του γείτονα πριν μετακινηθεί στους επόμενους γείτονες.</p></li>
+		<li><button data-step="6" data-intro="Click on the button to run the algorithm on the current graph." class="btn waves-effect waves-light btn-large run-btn full-width-btn" onclick="bfs()" >Εκτελεση BFS</button> </li>
+		<li>
+		</span>
+		 <button data-step="10" data-tooltipClass="lastStep" data-position="right" data-intro="That was it the tutorial is over!You can use  this button to view again the tutorial." class="btn waves-effect waves-light btn-large full-width-btn help-btn"  onclick="javascript:introJs().start();" >Βοηθεια</button>
+		 
+		 </li>
+	  <div class="vs hide" id="ss"></div>
+	  <div class="vs hide" id="vs"></div>		
+      </ul>
+
+</header>
+<body>
+
+<main>
+<div class="modal-overlay"></div>
+	<div class="row no-margin-row">
+        <div class="col s9 no-pad-col" >
+		 		  
+			<div data-step="1" data-tooltipClass="networkStep" data-intro="This is your workspace where the graph or tree is displayed.You can use the edit button to add, edit and delete nodes and edges.Use the scroll button to zoom in or out or the cursor to move nodes or the whole graph." data-position="right" id="network"></div>
+			
+			<div class="overlay"></div>
+			
+			
+			  <div class="fixed-action-btn" data-step="3" data-intro="Use this button change display options for the graph/tree.For example transform the graph to tree." data-position="left" >
+				<a class="btn-floating btn-large blue tooltipped" data-position="left" data-delay="50" data-tooltip="Ρυθμίσεις προβολής του γράφου.">
+				  <i class="large material-icons">visibility</i>
+				</a>
+				<ul>
+				  <li><a class="btn btn-floating btn-large tree-graph-mode green white-text tooltipped" data-position="left" data-delay="50" data-tooltip="Μετατροπή γράφου σε δέντρο και αντίστροφα"><i class="material-icons">device_hub</i></a></li>
+				  <li><a class="btn btn-floating btn-large arrows-for-edges tooltipped" data-position="left" data-delay="50" data-tooltip="Προβολή των δεσμών ως βέλη." ><i class="material-icons">compare_arrows</i></a></li>
+				  <li><a class="btn btn-floating btn-large letters-to-numbers tooltipped" data-position="left" data-delay="50" data-tooltip="Προβολή των κόμβων με αριθμούς."  ><i class="material-icons">font_download</i></a></li>
+				</ul>
+			  </div>
+        
+			<div class="card" id="steps" data-step="9" data-position="right" data-intro="These are the arrays being used for the algorithm.You can view their state on each algorithm step individually.">
+				<ul  class="collection" >
+					<a href="#!" class="collection-item tooltipped" data-position="top" data-tooltip="Στο μέτωπο αναζήτησης προσθέτουμε τους κόμβους που θα προσπελάσουμε στη συνέχεια του αλγορίθμου."><span class="stack-name">Μετωπο Αναζητησης</span>: [<span id="stack-status" ></span>] </a>
+					<a href="#!"  class="collection-item tooltipped" data-position="top" data-tooltip="Το κλειστό σύνολο περιέχει τους κόμβους που έχει επισκεφθεί ο αλγόριθμος.Το κλειστό σύνολο είναι το αποτέλεσμα του αλγορίθμου.">Κλειστο Συνολο: [<span id="visited-status"></span>]</a>
+					<a href="#!"  class="collection-item tooltipped" data-position="top" data-tooltip="Πίνακας με τη κατάσταση του αλγορίθμου.">Κατασταση: [<span id="state-array"></span>]</a>	
+					<a href="#!"  class="collection-item tooltipped" data-position="top" data-tooltip="Τα παιδιά του κόμβου κατάσταση.">Παιδια: [<span id="children-array"></span>]</a>	
+				</ul>
+			</div>
+			
+			<div data-step="8" data-position="top" data-intro="This is the section with the information of the algorithm.Hover with you cursor on any element to view what it is." class="card dn-algorithm-info">
+				
+				<div  id="step" class="col s1 tooltipped" data-position="top" data-tooltip="To τρέχων βήμα του αλγορίθμου.">Βήμα: -</div>
+				
+				<div class="col s10 dn-node-color">
+					
+				   <div class="circle blue"></div>
+				   <div  class="tooltipped" data-position="top" data-tooltip="To μπλε χρώμα υποδηλώνει ότι ο αλγόριθμος δεν έχει επισκεφθεί τον κόμβο ακόμα.">Μη προσπελασμένος</div> 
+				   <div class="circle deep-orange"></div>
+				   <div class="tooltipped" data-position="top" data-tooltip="To πορτοκαλί χρώμα υποδηλώνει τον κόμβο-κατάσταση του αλγορίθμου.">Κατάσταση</div>
+				   <div class="circle grey"></div>
+				   <div class="tooltipped" data-position="top" data-tooltip="To γκρι χρώμα υποδηλώνει ότι ο αλγόριθμος έχει επισκεφθεί τον κόμβο.">Προσπελασμένος</div>
+				   <div class="circle green"></div>
+				   <div class="tooltipped" data-position="top" data-tooltip="To πράσινο χρώμα υποδηλώνει ότι ο κόμβος θα προστεθεί στο μέτωπο αναζήτησης.">Εισαγωγή</div>
+				   <div class="circle red hide"></div>
+				   <div class="tooltipped hide" data-position="top" data-tooltip="Red color indicates that a node has been removed from the queue.">Deleted</div>
+				   <div class="circle amber"></div>
+				   <div class="tooltipped" data-position="top" data-tooltip="To κίτρινο χρώμα δελιχνει τους δεσμούς του κόμβου.">Δεσμοί</div>
+				   
+				   
+				</div>
+				
+				<div  id="all-steps" class="col s1 tooltipped waves-effect waves-darken" data-position="top" data-tooltip="Πίνακας με όλα τα βήματα του αλγορίθμου."><a class="modal-trigger" href="#all-steps-panel"><i class="material-icons">list</i></a></div>	
+			</div>
+			
+			
+			 <div id="all-steps-panel" class="modal ">
+				<div class="modal-content">
+				  <h4>Όλα τα βήματα του Αλγορίθμου</h4>
+				  <div class="table-wrapper">
+					 <table class="bordered responsive-table">
+						<thead>
+						  <tr>
+							  <th>Mέτωπο Αναζήτησης</th>
+							  <th>Κλειστό Σύνολο</th>
+							  <th>Κατάσταση</th>
+							  <th>Παιδιά</th>
+						  </tr>
+						</thead>
+
+						<tbody>
+						 <tr></tr>
+						 
+						</tbody>
+					  </table>
+				  </div>
+					 
+				</div>
+				<div class="modal-footer">
+				  
+				  <div class="left" >Τελικό Αποτέλεσμα: [<a href="#!" id="output-stack" class="collection-item"></a>]</div>
+				  <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat right">Κλείσιμο</a>
+				</div>
+			  </div>
+			
+			
+		</div>
+
+		<div class="col s4 dn-right-panel no-pad-col">
+		     <div class="row">
+				<div class="col s12">
+				  <ul class="tabs">
+					<li  class="tab col s4"><a data-step="7" data-position="left" data-intro="Use this tab to view step by step how the algorithm works.You can clik on a step to view the current state and information of the algorithm." href="#test1">ΒΗΜΑΤΑ</a></li>
+					<li class="tab col s4"><a href="#test2">ΚΩΔΙΚΑΣ</a></li>
+					<li class="tab col s4"><a class="active" href="#tab3">ΡΥΘΜΙΣΕΙΣ</a></li>
+				  </ul>
+				</div>
+				<div id="test1" class="col s12">
+					<ul id="main-timeline" class="collection">
+					<li class="help">Δεν υπάρχουν διαθέσιμα βήματα.Εκτέλεσε τον αλγόριθμο για να δεις αναλυτικά τα βήματα του αλγορίθμου.</li>
+					</ul>
+				</div>
+				<div id="test2" class="col s12">
+					<ul  class="collection dfs">
+					   <a href="#!" id="" class="collection-item">procedure DFS-iterative(G,v):<span class="new badge">1</span></a>
+					   <a href="#!" id="" class="collection-item">  let S be a stack<span class="new badge">2</span></a>
+					   <a href="#!" id="" class="collection-item">S.push(v)<span class="new badge">3</span></a>
+					   <a href="#!" id="" class="collection-item">while S is not empty<span class="new badge">4</span></a>
+					   <a href="#!" id="" class="collection-item">v = S.pop() <span class="new badge">5</span></a>
+					   <a href="#!" id="" class="collection-item"> if v is not labeled as discovered:<span class="new badge">6</span></a>
+					   <a href="#!" id="" class="collection-item"> label v as discovered<span class="new badge">7</span></a>
+					   <a href="#!" id="" class="collection-item">for all edges from v to w in G.adjacentEdges(v) do<span class="new badge">8</span></a>
+					   <a href="#!" id="" class="collection-item"> S.push(w)<span class="new badge">9</span></a>
+					</ul>
+				</div>
+				
+				<div id="tab3" data-step="2" data-intro="You can use the application settings to load an example graph or tree, clear the workspace or generate a number of nodes so that you can connect them." data-position="left"  class="col s12">			 
+				 
+				<div class="row"> 
+					<div class="setting-title col s12">Φόρτωση Παραδείγματος</div>
+					<p class="how-to col s12">
+							Επέλεξε και φόρτωσε έναν προκαθορισμένο γράφο ή δέντρο.
+						</p>
+					<div class="input-field col s12">
+						<select id="example-graph">
+						  <option value="" disabled selected>Choose your option</option>
+						  <option value="1">BFS Tree</option>
+						  <option value="2">DFS Tree</option>
+						  <option value="3">Example 3</option>
+						</select>
+						
+					  </div>
+					<div class="col s12">
+						<button class="btn waves-effect waves-light" >ΦΟΡΤΩΣΗ</button>
+						
+					</div>
+				</div>
+
+
+				<div class="row"> 
+					<div class="col s12">
+						<div class="setting-title">Διαγραφή γράφου</div>
+						<p class="how-to">
+							Πάτα το κου.μπί για να διαγράψεις τον υπάρχων γράφο/δέντρο
+						</p>
+						<button class="btn waves-effect waves-light destroy-network" >Διαγραφη</button>
+						
+					</div>
+				</div>
+				
+				<div class="row"> 
+					<div class="setting-title col s12">Παραγωγή Κόμβων</div>
+					<p class="how-to col s12">
+							Πάτα στο κουμπί για να παράγεις τυχαίους κόμβους.Χρησιμοποίησε το πεδίο από κάτω για να εισάγεις τον αριθμό των κόμβων που θες να παράγεις.
+						</p>
+					<div class="input-field col s12">
+					
+					  <input value="" id="numofnodes" type="number" class="validate">
+					  <label  for="numofnodes">Αριθμός Κόμβων</label>
+					</div>
+					<div class="col s12">
+						<button class="btn waves-effect waves-light generate-nodes" >Παραγωγη κομβων</button>
+						
+					</div>
+				</div>
+				
+				 <div class="row">
+					<div class="setting-title col s12">Ταχύτητα Αλγορίθμου</div>
+					<p class="how-to col s12">
+						Αλλαξε τον ρυθμό/ταχύτητα που εκτελείται ο αλγόριθμος.
+					</p>
+					<div class="input-field col s12">
+						
+					  <input value="1000" id="animspeed" type="text" class="validate">
+					  <label  for="animspeed">Ταχύτητα σε ms (1000ms = 1sec)</label>
+					</div>
+					<div class="col s12">
+						<button class="btn waves-effect waves-light" onclick="changeSpeed()">Αλλαγη ταχυτητας</button> 
+						
+					</div>
+				  </div>
+		
+		
+				</div>
+				
+            </div>
+
+		</div>
+    </div>
+	   
+	   
+		<div id="network-popUp">
+		  <span id="operation">node</span> <br>
+		  <table style="margin:auto;"><tr>
+			  <div class="row hide">
+				  <div class="input-field col s12">
+					<input id="node-id" value="new value" type="text" class="validate">
+					<label for="node-id">id</label>
+				  </div>
+			  </div>
+			  <div class="row">
+				  <div class="input-field col s12">
+					<input id="node-label" value="K" type="text" class="validate">
+					<label for="node-label">label</label>
+				  </div>
+			  </div>
+		  </table>
+		  <a class="waves-effect waves-light btn" id="saveButton">Add Node</a>
+		  <a class="waves-effect waves-light btn" id="cancelButton">Cancel</a>
+		</div>
+
+		
+	   
+</main>
+
+
+<script type="text/javascript" src="../../dist/js/jquery-latest.js"></script>
+<script type="text/javascript" src="../../dist/js/vis.js"></script>
+<script type="text/javascript" src="../../dist/js/algorithms.js"></script>
+<script type="text/javascript" src="../../dist/js/materialize.js"></script>
+<script type="text/javascript" src="../../dist/js/initialize.js"></script>
+<script type="text/javascript" src="../../dist/js/examples.js"></script>
+<script type="text/javascript" src="../../dist/js/intro.js"></script>
+
+<script>
+
+(function($) {
+jQuery(document).ready(function($){   
+    
+	jQuery('ul.tabs').tabs();
+	jQuery('select').material_select();
+	jQuery('.tooltipped').tooltip({delay: 20});
+	jQuery('.modal').modal();
+	  	});   
+})(jQuery);
+  
+</script>
+
+</body>
+</html>
